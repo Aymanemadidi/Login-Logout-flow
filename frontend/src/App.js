@@ -1,5 +1,7 @@
 import Login from "./components/Login";
 import Signup from "./components/Signup";
+import ConfirmEmail from "./components/ConfirmEmail";
+import CreatePassword from "./components/CreatePassword";
 import { Route, BrowserRouter, Routes } from "react-router-dom";
 
 export default function App() {
@@ -10,6 +12,8 @@ export default function App() {
 					<Route path="/" element={<Login />} />
 					<Route path="/signup" element={<Signup />} />
 					<Route path="/login" element={<Login />} />
+					<Route path="/confirmEmail" element={<ConfirmEmail />} />
+					<Route path="/createPassword" element={<CreatePassword />} />
 				</Routes>
 			</BrowserRouter>
 		</div>
