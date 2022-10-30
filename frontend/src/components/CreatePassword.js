@@ -1,36 +1,75 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { checkNumber, checkSymbol, checkUpper } from "../utils";
+
 function CreatePassword() {
 	const [isUpper, setIsUpper] = useState(false);
 	const [isNum, setIsNum] = useState(false);
 	const [isSymbol, setIsSymbol] = useState(false);
 	const [lengthOk, setLengthOk] = useState(false);
 	const [password, setPassword] = useState("");
+	const [passwordShow, setPasswordShow] = useState(false);
 	const [passwordOK, setPasswordOK] = useState(false);
+	const [startCheck, setStartCheck] = useState(false);
 
-	const handlePasswordChange = (event) => {
-		if (checkUpper(event.target.value)) {
-			setIsUpper(true);
-		} else {
+	const [passwordState, setPasswordState] = useState("idle");
+
+	const [im, setI] = useState(0);
+
+	function handlePasswordChange(event) {
+		if (isUpper && !checkUpper(event.target.value)) {
 			setIsUpper(false);
+			setI(im - 1);
 		}
-		if (checkNumber(event.target.value)) {
-			setIsNum(true);
-		} else {
-			setIsNum(false);
-		}
-		if (checkSymbol(event.target.value)) {
-			setIsSymbol(true);
-		} else {
+		if (isSymbol && !checkSymbol(event.target.value)) {
 			setIsSymbol(false);
+			setI(im - 1);
 		}
-		if (event.target.value.length > 6) {
-			// console.log(event.target.value.length);
-			setLengthOk(true);
-		} else {
+		if (isNum && !checkNumber(event.target.value)) {
+			setIsNum(false);
+			setI(im - 1);
+		}
+		if (lengthOk && event.target.value.length < 7) {
 			setLengthOk(false);
+			setI(im - 1);
 		}
-	};
+		/**
+		 *
+		 */
+		if (!isUpper && checkUpper(event.target.value)) {
+			setIsUpper(true);
+			setI(im + 1);
+		}
+		if (!isSymbol && checkSymbol(event.target.value)) {
+			setIsSymbol(true);
+			setI(im + 1);
+		}
+		if (!isNum && checkNumber(event.target.value)) {
+			setIsNum(true);
+			setI(im + 1);
+		}
+		if (!lengthOk && event.target.value.length > 6) {
+			setLengthOk(true);
+			setI(im + 1);
+		}
+		// console.log(im);
+	}
+
+	useEffect(() => {
+		if (im === 0) {
+			setPasswordState("idle");
+		} else if (im === 1) {
+			setPasswordState("weak");
+		} else if (im === 2 && lengthOk) {
+			console.log("boom");
+			setPasswordState("medium");
+		} else if (im === 3 && lengthOk) {
+			console.log("boom");
+			setPasswordState("good");
+		} else if (im === 4 && lengthOk) {
+			console.log("boom");
+			setPasswordState("strong");
+		}
+	}, [im, lengthOk]);
 
 	return (
 		<div className="flex justify-center">
@@ -52,10 +91,11 @@ function CreatePassword() {
 					</div>
 					<div>
 						<input
-							type="password"
-							className="bg-[#F7F7F7] text-Poppins rounded-[7px] pt-[16px] pb-[16px] pr-[12px] w-[360px] md:w-[500px] pl-3 font-light mt-1 text-[13px] active:border-green-500"
+							type={passwordShow ? "text" : "password"}
+							className="bg-[#F7F7F7] text-Poppins rounded-[7px] pt-[16px] pb-[16px] pr-[12px] w-[360px] md:w-[500px] pl-3 font-normal mt-1 text-[15px] active:border-green-500"
 							placeholder="Nouveau mot de passe"
 							onChange={(e) => {
+								setStartCheck(true);
 								setPassword(e.target.value);
 								handlePasswordChange(e);
 							}}
@@ -63,20 +103,55 @@ function CreatePassword() {
 						/>
 					</div>
 					<div className="flex gap-4 justify-between w-[360px] md:w-[500px]">
-						<div className="border w-1/4"></div>
-						<div className="border w-1/4"></div>
-						<div className="border w-1/4"></div>
-						<div className="border w-1/4"></div>
+						<div
+							className={`border w-1/4 h-1
+              ${passwordState === "weak" ? "bg-red-500" : ""}${
+								passwordState === "medium" ? "bg-black" : ""
+							}${passwordState === "good" ? "bg-orange-500" : ""}${
+								passwordState === "strong" ? "bg-[#62C247]" : ""
+							}`}
+						></div>
+						<div
+							className={`border w-1/4 h-1
+              ${passwordState === "medium" ? "bg-black" : ""}${
+								passwordState === "good" ? "bg-orange-500" : ""
+							}${passwordState === "strong" ? "bg-[#62C247]" : ""}`}
+						></div>
+						<div
+							className={`border w-1/4 h-1
+              ${passwordState === "good" ? "bg-orange-500" : ""}${
+								passwordState === "strong" ? "bg-[#62C247]" : ""
+							}`}
+						></div>
+						<div
+							className={`border w-1/4 h-1 ${
+								passwordState === "strong" ? "bg-[#62C247]" : ""
+							}`}
+						></div>
 					</div>
-					<div className="flex justify-end mt-1">
+					<div className="flex justify-between">
+						<div className="text-Poppins font-thin text-[12px] cursor-pointer">
+							<p onClick={() => setPasswordShow(!passwordShow)}>
+								{passwordShow ? "cacher" : "montrer"}
+							</p>
+						</div>
 						<div className="text-Poppins font-thin text-[12px]">
-							<p>Mot de passe trop faible</p>
+							{passwordState === "idle" ||
+							passwordState === "weak" ||
+							passwordState === "medium" ? (
+								<p>Mot de passe trop faible</p>
+							) : passwordState === "good" ? (
+								"presque parfait"
+							) : (
+								"AH parfait!"
+							)}
 						</div>
 					</div>
 					<div className="">
 						<button
 							type="submit"
-							className="bg-[#62C247] text-white text-Poppins rounded-[7px] pt-[16px] pb-[16px] pr-[12px] w-[360px] md:w-[500px] pl-3 font-normal mt-3"
+							className="bg-[#62C247] text-white text-Poppins rounded-[7px] pt-[16px] pb-[16px] pr-[12px] w-[360px] md:w-[500px] pl-3 font-normal mt-3 disabled:bg-green-900 disabled:text-gray-500"
+							disabled={!(passwordState === "strong")}
 							// onClick={handleSignup}
 						>
 							Confirmer
