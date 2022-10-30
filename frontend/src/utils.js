@@ -49,6 +49,7 @@ export const checkNumber = (str) => {
 };
 
 export const checkSymbol = (str) => {
+	console.log("utils symbol");
 	const symbols = [
 		"~",
 		"!",

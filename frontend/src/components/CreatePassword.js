@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import * as ReactDOM from "react-dom";
 import { checkNumber, checkSymbol, checkUpper } from "../utils";
 
 function CreatePassword() {
@@ -16,6 +17,15 @@ function CreatePassword() {
 	const [im, setI] = useState(0);
 
 	function handlePasswordChange(event) {
+		if (event.target.value === "") {
+			setPasswordState("idle");
+			setIsUpper(false);
+			setIsSymbol(false);
+			setIsNum(false);
+			setLengthOk(false);
+			setI(0);
+			return;
+		}
 		if (isUpper && !checkUpper(event.target.value)) {
 			setIsUpper(false);
 			setI(im - 1);
@@ -36,20 +46,32 @@ function CreatePassword() {
 		 *
 		 */
 		if (!isUpper && checkUpper(event.target.value)) {
+			console.log("upper");
 			setIsUpper(true);
-			setI(im + 1);
+			ReactDOM.flushSync(() => {
+				setI((im) => im + 1);
+			});
 		}
 		if (!isSymbol && checkSymbol(event.target.value)) {
+			console.log("symbol");
 			setIsSymbol(true);
-			setI(im + 1);
+			ReactDOM.flushSync(() => {
+				setI((im) => im + 1);
+			});
 		}
 		if (!isNum && checkNumber(event.target.value)) {
+			console.log("number");
 			setIsNum(true);
-			setI(im + 1);
+			ReactDOM.flushSync(() => {
+				setI((im) => im + 1);
+			});
 		}
 		if (!lengthOk && event.target.value.length > 6) {
+			console.log("length");
 			setLengthOk(true);
-			setI(im + 1);
+			ReactDOM.flushSync(() => {
+				setI((im) => im + 1);
+			});
 		}
 		// console.log(im);
 	}
@@ -60,13 +82,10 @@ function CreatePassword() {
 		} else if (im === 1) {
 			setPasswordState("weak");
 		} else if (im === 2 && lengthOk) {
-			console.log("boom");
 			setPasswordState("medium");
 		} else if (im === 3 && lengthOk) {
-			console.log("boom");
 			setPasswordState("good");
 		} else if (im === 4 && lengthOk) {
-			console.log("boom");
 			setPasswordState("strong");
 		}
 	}, [im, lengthOk]);
@@ -76,7 +95,7 @@ function CreatePassword() {
 			<div className="flex justify-center">
 				<div className="signup-wrapper p-5 mt-20 flex flex-col gap-2">
 					<div>
-						<p className="font-poppins w-[348px] md:w-[390px] text-[28px]">
+						<p className="font-poppins w-[348px] md:w-[450px] text-[25px]">
 							Definissez votre nouveau mot de passe
 						</p>
 					</div>
