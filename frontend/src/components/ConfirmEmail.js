@@ -1,26 +1,56 @@
 import React, { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import axios from "axios";
+import jwt_decode from "jwt-decode";
+import Axios from "axios";
 
 function ConfirmEmail() {
 	const [code, setCode] = useState(null);
+	const [email, setEmail] = useState("");
 
 	const location = useLocation();
 	const Navigate = useNavigate();
+
+	useEffect(() => {
+		const token = window.localStorage.getItem("token");
+		if (!token) {
+			Navigate("/404", { replace: true });
+			return;
+		}
+		async function tokenCheck() {
+			try {
+				const payload = await jwt_decode(token);
+				const data = await Axios.post("http://localhost:8000/api/check", {
+					email: payload.email,
+				});
+				if (!data) {
+					Navigate("/404", { replace: true });
+					return;
+				}
+				if (data.state === "tokenKO") {
+					Navigate("/404", { replace: true });
+				}
+				setEmail(data.data.email);
+			} catch (error) {
+				Navigate("/404", { replace: true });
+			}
+		}
+		tokenCheck();
+	}, [Navigate]);
 
 	useEffect(() => {
 		console.log("check");
 		async function check() {
 			if (code && code.length === 6) {
 				console.log("code: ", code.length);
-				const res = await axios.post("http://localhost:8000/api/checkConfirm", {
+				let owner = location.state.email || email;
+				const res = await Axios.post("http://localhost:8000/api/checkConfirm", {
 					code,
-					owner: location.state.email,
+					owner,
 				});
 				// console.log(data);
 				if (res.data.state === "success") {
 					Navigate("/createPassword", {
-						state: { email: location.state.email },
+						state: { email: owner },
 						replace: true,
 					});
 				} else {
@@ -30,7 +60,7 @@ function ConfirmEmail() {
 		}
 
 		check();
-	}, [Navigate, code, location.state.email]);
+	}, [Navigate, code, email]);
 
 	return (
 		<div className="flex justify-center">
@@ -48,7 +78,7 @@ function ConfirmEmail() {
 								to={"/politique-de-Confidentialite"}
 								className="text-black font-normal ml-1"
 							>
-								{location.state.email ? location.state.email : "votre E-mail"}
+								{location.state.email ? location.state.email : email}
 							</span>{" "}
 						</p>
 					</div>

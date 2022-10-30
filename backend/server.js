@@ -141,13 +141,54 @@ app.post("/api/passwordAdd", async (req, res) => {
 			{ email, password: newPassword },
 			{ new: true }
 		);
+		const token = jwt.sign({ email }, "secret123");
 		if (!user) {
 			return res.status(404).json({ error: "User not found!" });
 		}
-		res.status(201).json({ state: "updated", message: "update successful" });
+		res
+			.status(201)
+			.json({ state: "updated", message: "update successful", user, token });
 	} catch (error) {
 		console.error(error);
 		res.json(400).json({ error });
+	}
+});
+
+// app.post("/api/tokenCheck", async (req, res) => {
+// 	try {
+// 		const { token } = req.body;
+// 		console.log(data);
+// 		if (!data) {
+// 			return res
+// 				.status(404)
+// 				.json({ state: "tokenKO", message: "token not found" });
+// 		}
+// 		const user = await findOne({ email: data.email });
+// 		if (!user) {
+// 			return res.status(404).json({ message: "user not found" });
+// 		}
+// 		res.status(201).json({ state: "tokenOK", email: user.email });
+// 	} catch (error) {
+// 		console.error(error);
+// 		res.status(500).json({ state: "tokenKO", error });
+// 	}
+// });
+
+app.post("/api/check", async (req, res) => {
+	try {
+		const { email } = req.body;
+		const user = await User.findOne({
+			email,
+		});
+		if (!user) {
+			return res
+				.status(404)
+				.json({ message: "user not found", state: "tokenKO" });
+		}
+		res.status(201).json({ state: "tokenOK", email: user.email });
+	} catch (e) {
+		// console.error(e);
+		res.json({ status: "error", error: "User not found" });
 	}
 });
 

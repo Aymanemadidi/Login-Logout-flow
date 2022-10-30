@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import * as ReactDOM from "react-dom";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import Axios from "axios";
+import jwt_decode from "jwt-decode";
 import { checkNumber, checkSymbol, checkUpper } from "../utils";
 
 function CreatePassword() {
@@ -21,7 +22,31 @@ function CreatePassword() {
 	const location = useLocation();
 	const Navigate = useNavigate();
 
-	console.log(location);
+	useEffect(() => {
+		const token = window.localStorage.getItem("token");
+		if (!token) {
+			Navigate("/404", { replace: true });
+			return;
+		}
+		async function tokenCheck() {
+			try {
+				const payload = await jwt_decode(token);
+				const data = await Axios.post("http://localhost:8000/api/check", {
+					email: payload.email,
+				});
+				if (!data) {
+					Navigate("/404", { replace: true });
+					return;
+				}
+				if (data.state === "tokenKO") {
+					Navigate("/404", { replace: true });
+				}
+			} catch (error) {
+				Navigate("/404", { replace: true });
+			}
+		}
+		tokenCheck();
+	}, [Navigate]);
 
 	async function handlePasswordAdd() {
 		try {
@@ -35,7 +60,13 @@ function CreatePassword() {
 			console.log(data);
 			if (data) {
 				if (data.state === "updated") {
-					Navigate("/config", { replace: true });
+					window.localStorage.setItem("token", data.token);
+					Navigate("/config", {
+						replace: true,
+						state: {
+							email: data.user.email,
+						},
+					});
 				}
 			}
 		} catch (error) {
