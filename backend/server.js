@@ -59,6 +59,35 @@ app.post("/api/register", async (req, res) => {
 	}
 });
 
+app.post("/api/login", async (req, res) => {
+	try {
+		const { email, password } = req.body;
+		const user = await User.findOne({
+			email,
+		});
+
+		if (!user) {
+			res.json({
+				status: "error",
+				error: "Invalid Login",
+			});
+		} else if (user) {
+			const isPasswordValid = bcrypt.compare(password, user.password);
+
+			if (isPasswordValid) {
+				const token = jwt.sign({ email }, "secret123");
+
+				res.json({ state: "logged", token, email });
+			} else {
+				res.json({ state: "error", error: "User Not Valid" });
+			}
+		}
+	} catch (e) {
+		console.error(e);
+		res.json({ status: "error", user: "false" });
+	}
+});
+
 app.post("/api/confirm", async (req, res) => {
 	try {
 		await db.collections.verificationcodes.deleteMany({
@@ -99,6 +128,26 @@ app.post("/api/checkConfirm", async (req, res) => {
 		}
 	} catch (error) {
 		res.json({ error });
+	}
+});
+
+app.post("/api/passwordAdd", async (req, res) => {
+	try {
+		const { email, password } = req.body;
+		const newPassword = await bcrypt.hash(password, 10);
+
+		const user = await User.findOneAndUpdate(
+			{ email },
+			{ email, password: newPassword },
+			{ new: true }
+		);
+		if (!user) {
+			return res.status(404).json({ error: "User not found!" });
+		}
+		res.status(201).json({ state: "updated", message: "update successful" });
+	} catch (error) {
+		console.error(error);
+		res.json(400).json({ error });
 	}
 });
 

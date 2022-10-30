@@ -19,7 +19,10 @@ function ConfirmEmail() {
 				});
 				// console.log(data);
 				if (res.data.state === "success") {
-					Navigate("/createPassword", { replace: true });
+					Navigate("/createPassword", {
+						state: { email: location.state.email },
+						replace: true,
+					});
 				} else {
 					alert("incorrect verification code");
 				}

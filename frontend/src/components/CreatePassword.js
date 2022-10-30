@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import * as ReactDOM from "react-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import Axios from "axios";
 import { checkNumber, checkSymbol, checkUpper } from "../utils";
 
 function CreatePassword() {
@@ -15,6 +17,31 @@ function CreatePassword() {
 	const [passwordState, setPasswordState] = useState("idle");
 
 	const [im, setI] = useState(0);
+
+	const location = useLocation();
+	const Navigate = useNavigate();
+
+	console.log(location);
+
+	async function handlePasswordAdd() {
+		try {
+			const { data } = await Axios.post(
+				"http://localhost:8000/api/passwordAdd",
+				{
+					email: location.state.email,
+					password,
+				}
+			);
+			console.log(data);
+			if (data) {
+				if (data.state === "updated") {
+					Navigate("/config", { replace: true });
+				}
+			}
+		} catch (error) {
+			console.error(error);
+		}
+	}
 
 	function handlePasswordChange(event) {
 		if (event.target.value === "") {
@@ -171,7 +198,7 @@ function CreatePassword() {
 							type="submit"
 							className="bg-[#62C247] text-white text-Poppins rounded-[7px] pt-[16px] pb-[16px] pr-[12px] w-[360px] md:w-[500px] pl-3 font-normal mt-3 disabled:bg-green-900 disabled:text-gray-500"
 							disabled={!(passwordState === "strong")}
-							// onClick={handleSignup}
+							onClick={handlePasswordAdd}
 						>
 							Confirmer
 						</button>

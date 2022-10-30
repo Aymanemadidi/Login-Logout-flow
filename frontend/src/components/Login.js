@@ -1,10 +1,34 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import eye from "../eye.svg";
+import Axios from "axios";
 
 function Login() {
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
+
+	const Navigate = useNavigate();
+
+	async function handleLogin() {
+		try {
+			const { data } = await Axios.post("http://localhost:8000/api/login", {
+				email,
+				password,
+			});
+
+			if (data.state === "logged") {
+				alert("Login Successful");
+				window.localStorage.setItem("token", data.token);
+
+				Navigate("/home", { state: { user: data.email, token: data.token } });
+			} else {
+				alert("Please check your username and password");
+			}
+		} catch (error) {
+			console.error(error);
+		}
+	}
+
 	return (
 		<>
 			<div className="flex justify-center">
@@ -25,7 +49,7 @@ function Login() {
 							type="email"
 							className="bg-[#F7F7F7] text-Poppins rounded-[7px] pt-[16px] pb-[16px] pr-[12px] w-[360px] pl-3 font-light mt-5 text-[13px]"
 							placeholder="Adresse e-mail"
-							onClick={(e) => setEmail(e.target.value)}
+							onChange={(e) => setEmail(e.target.value)}
 							value={email}
 						/>
 					</div>
@@ -35,7 +59,7 @@ function Login() {
 							type="password"
 							className="bg-[#F7F7F7] text-Poppins rounded-[7px] pt-[16px] pb-[16px] pr-[12px] w-[360px] pl-3 font-light mt-1 text-[13px] relative"
 							placeholder="Mot de passe"
-							onClick={(e) => setPassword(e.target.value)}
+							onChange={(e) => setPassword(e.target.value)}
 							value={password}
 						/>
 					</div>
@@ -63,6 +87,7 @@ function Login() {
 						<button
 							type="submit"
 							className="bg-[#62C247] text-white text-Poppins rounded-[7px] pt-[16px] pb-[16px] pr-[12px] w-[360px] pl-3 font-light mt-3"
+							onClick={handleLogin}
 						>
 							Se connecter
 						</button>
