@@ -1,9 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
+import retour from "../retour.svg";
+import loading from "../loading.svg";
 
 function ConfirmEmail() {
 	const [code, setCode] = useState(null);
+	const [email, setEmail] = useState("");
+	const [show, setShow] = useState(false);
 
 	const location = useLocation();
 	const Navigate = useNavigate();
@@ -16,16 +20,19 @@ function ConfirmEmail() {
 		async function check() {
 			if (code && code.length === 6) {
 				console.log("code: ", code.length);
+				setShow(true);
 				const res = await axios.post("http://localhost:8000/api/checkConfirm", {
 					code,
 					owner: location.state.email,
 				});
 				// console.log(data);
 				if (res.data.state === "success") {
-					Navigate("/createPassword", {
-						state: { email: location.state.email },
-						replace: true,
-					});
+					let timeout = setTimeout(() => {
+						Navigate("/createPassword", {
+							state: { email: location.state.email },
+							replace: true,
+						});
+					}, 1000);
 				} else {
 					alert("incorrect verification code");
 				}
@@ -33,6 +40,8 @@ function ConfirmEmail() {
 		}
 
 		check();
+
+		// return () => clearTimeout()
 	}, [Navigate, code, location.state]);
 
 	// if (location.state === null) {
@@ -42,6 +51,14 @@ function ConfirmEmail() {
 	return (
 		<div className="flex justify-center">
 			<div className="flex justify-center">
+				<div
+					className={`${
+						""
+						// show ? "" : "hidden"
+					} mt-[10px] order-10 text-center mr-5 absolute left-[70%] md:left-[480px] lg:left-[570px] top-[345px] md:top-[235px] md: z-10`}
+				>
+					<img className="h-[50px] p-3" src={loading} alt="" />
+				</div>
 				<div className="signup-wrapper p-5 mt-20 flex flex-col gap-2">
 					<div>
 						<p className="font-poppins w-[347px] md:w-[500px] text-[28px]">
@@ -67,7 +84,7 @@ function ConfirmEmail() {
 					<div>
 						<input
 							type="text"
-							className="bg-[#F7F7F7] text-Poppins rounded-[7px] pt-[16px] pb-[16px] pr-[12px] w-[360px] md:w-[500px] pl-3 font-light mt-1 text-[13px] active:border-green-500"
+							className="bg-[#F7F7F7] text-Poppins rounded-[7px] pt-[16px] pb-[16px] pr-[12px] w-[360px] md:w-[500px] pl-3 font-light mt-1 text-[13px] active:border-green-500 relative"
 							placeholder="XXXXXX"
 							onChange={(e) => setCode(e.target.value)}
 						/>
@@ -81,6 +98,15 @@ function ConfirmEmail() {
 								</span>
 							</Link>{" "}
 						</p>
+					</div>
+					<div className="mt-[10px] order-10 text-center mr-5">
+						<button
+							onClick={() =>
+								Navigate("/signup", { replace: true, state: { email } })
+							}
+						>
+							<img className="h-13 w-13 p-3" src={retour} alt="" />
+						</button>
 					</div>
 				</div>
 			</div>

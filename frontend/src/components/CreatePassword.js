@@ -4,8 +4,10 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import Axios from "axios";
 import jwt_decode from "jwt-decode";
 import { checkNumber, checkSymbol, checkUpper } from "../utils";
+import retour from "../retour.svg";
 
 function CreatePassword() {
+	const [email, setEmail] = useState("");
 	const [isUpper, setIsUpper] = useState(false);
 	const [isNum, setIsNum] = useState(false);
 	const [isSymbol, setIsSymbol] = useState(false);
@@ -27,6 +29,7 @@ function CreatePassword() {
 			Navigate("/404", { replace: true });
 			return;
 		}
+		setEmail(location.state.email);
 		// async function tokenCheck() {
 		// 	if (token) {
 		// 		try {
@@ -233,6 +236,15 @@ function CreatePassword() {
 							onClick={handlePasswordAdd}
 						>
 							Confirmer
+						</button>
+					</div>
+					<div className="mt-[10px] order-10 text-center mr-5">
+						<button
+							onClick={() =>
+								Navigate("/confirmEmail", { replace: true, state: { email } })
+							}
+						>
+							<img className="h-13 w-13 p-3" src={retour} alt="" />
 						</button>
 					</div>
 				</div>

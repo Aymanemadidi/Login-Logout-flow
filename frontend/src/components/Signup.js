@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import trustpilot from "../image 13.png";
 import Axios from "axios";
 import { useNavigate } from "react-router-dom";
+import retour from "../retour.svg";
 
 function Signup() {
 	const [email, setEmail] = useState("");
@@ -81,6 +82,11 @@ function Signup() {
 							</Link>{" "}
 							applicable au traitement de vos données personnelles.
 						</p>
+					</div>
+					<div className="mt-[10px] order-10 text-center mr-5">
+						<button onClick={() => navigate("/", { replace: true })}>
+							<img className="h-13 w-13 p-3" src={retour} alt="" />
+						</button>
 					</div>
 				</div>
 			</div>
