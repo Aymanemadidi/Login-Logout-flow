@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import jwt_decode from "jwt-decode";
 import Axios from "axios";
 import check from "../check.svg";
@@ -9,7 +9,6 @@ import logout from "../logout.svg";
 function Config() {
 	const [email, setEmail] = useState("");
 
-	const location = useLocation();
 	const Navigate = useNavigate();
 
 	useEffect(() => {

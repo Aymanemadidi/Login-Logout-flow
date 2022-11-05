@@ -1,8 +1,7 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import * as ReactDOM from "react-dom";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import Axios from "axios";
-import jwt_decode from "jwt-decode";
 import { checkNumber, checkSymbol, checkUpper } from "../utils";
 import retour from "../retour.svg";
 
@@ -14,7 +13,6 @@ function CreatePassword() {
 	const [lengthOk, setLengthOk] = useState(false);
 	const [password, setPassword] = useState("");
 	const [passwordShow, setPasswordShow] = useState(false);
-	const [passwordOK, setPasswordOK] = useState(false);
 	const [startCheck, setStartCheck] = useState(false);
 
 	const [passwordState, setPasswordState] = useState("idle");
