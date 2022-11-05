@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import trustpilot from "../image 13.png";
+import trustpilot from "../trustpilot.svg";
 import Axios from "axios";
 import { useNavigate } from "react-router-dom";
 import retour from "../retour.svg";
+import profile from "../profile.svg";
+import arrow from "../arrow.svg";
 
 function Signup() {
 	const [email, setEmail] = useState("");
@@ -34,8 +36,8 @@ function Signup() {
 	};
 
 	return (
-		<div className="flex justify-center">
-			<div className="flex justify-center">
+		<div className="flex justify-center md:justify-around">
+			<div className="flex justify-center w-1/2">
 				<div className="signup-wrapper p-5 mt-20 flex flex-col gap-2">
 					<div>
 						<p className="font-poppins text-[28px]">
@@ -83,16 +85,40 @@ function Signup() {
 							applicable au traitement de vos données personnelles.
 						</p>
 					</div>
-					<div className="mt-[10px] order-10 text-center mr-5">
+					<div className="mt-[10px] order-10 text-center mr-5 md:hidden">
 						<button onClick={() => navigate("/", { replace: true })}>
 							<img className="h-13 w-13 p-3" src={retour} alt="" />
 						</button>
 					</div>
 				</div>
 			</div>
-			<div className="bg-green-900 w-[664px] hidden md:flex md:bg-gradient-to-r from-[#F2F8F4] to-[#F2F8F4] md:h-[790px] justify-center">
+			<div className="hidden md:flex md:flex-col md:bg-gradient-to-r from-[#F2F8F4] to-[#F2F8F4] md:h-[790px] justify-start gap-12 items-center w-1/2">
 				<div className="mt-[90px]">
-					<img src={trustpilot} className="w-[200px] h-[px]" alt="" />
+					<img src={trustpilot} className="w-13 h-14-" alt="" />
+				</div>
+				<div className="flex flex-col justify-center items-center border gap-4 bg-[#285C57] pt-5 pb-10 text-white w-[80%] rounded-3xl">
+					<div>
+						<img className="h-13 h-13" src={profile} alt="" />
+					</div>
+					<div className="w-[60%]">
+						<p className="text-[16px]">
+							“In the tech world, you can’t afford to be slow. Because of
+							Uizard, within five days of getting my idea – with only two days
+							of working in the Uizard platform – I already had a proof of
+							concept.”
+						</p>
+					</div>
+					<div>
+						<img className="h-13 h-13" src={arrow} alt="" />
+					</div>
+				</div>
+				<div className="mt-[-100px] ml-[160px] bg-[#62C247] text-white w-[160px] text-center p-3 rounded-2xl">
+					<p>Nthalie Durand, WellPharma</p>
+				</div>
+				<div className="w-[80%] flex justify-center">
+					<p className="text-[#285C57] text-[24px] text-center">
+						Rejoingez +10,000 pharmaciens connectés
+					</p>
 				</div>
 			</div>
 		</div>

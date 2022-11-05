@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import eye from "../eye.svg";
+import eyeoff from "../eyeoff.svg";
 import Axios from "axios";
 
 function Login() {
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
+	const [show, setShow] = useState(false);
 
 	const Navigate = useNavigate();
 
@@ -54,14 +56,25 @@ function Login() {
 						/>
 					</div>
 
-					<div>
-						<input
-							type="password"
-							className="bg-[#F7F7F7] text-Poppins rounded-[7px] pt-[16px] pb-[16px] pr-[12px] w-[360px] pl-3 font-light mt-1 text-[13px] relative"
-							placeholder="Mot de passe"
-							onChange={(e) => setPassword(e.target.value)}
-							value={password}
-						/>
+					<div className="flex items-center">
+						<div>
+							<input
+								type={`${show ? "text" : "password"}`}
+								className="bg-[#F7F7F7] text-Poppins rounded-[7px] pt-[16px] pb-[16px] pr-[12px] w-[360px] pl-3 font-light mt-1 text-[13px]"
+								placeholder="Mot de passe"
+								onChange={(e) => setPassword(e.target.value)}
+								value={password}
+							/>
+						</div>
+						<div className="z-20 ml-[-30px] translate-y-2">
+							<button onClick={() => setShow(!show)}>
+								{show ? (
+									<img src={eyeoff} className="w-6 h-6" alt="" />
+								) : (
+									<img src={eye} className="w-6 h-6" alt="" />
+								)}
+							</button>
+						</div>
 					</div>
 					<div className="flex mt-3 justify-between">
 						<div>
@@ -94,9 +107,6 @@ function Login() {
 					</div>
 				</div>
 			</div>
-			{/* <div className="absolute z-20 right-[35%] top-[35%]">
-				<img src={eye} className="w-5 h-5" alt="" />
-			</div> */}
 		</>
 	);
 }

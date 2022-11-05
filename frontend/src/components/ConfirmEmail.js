@@ -32,7 +32,7 @@ function ConfirmEmail() {
 							state: { email: location.state.email },
 							replace: true,
 						});
-					}, 1000);
+					}, 1500);
 				} else {
 					alert("incorrect verification code");
 				}
@@ -51,14 +51,6 @@ function ConfirmEmail() {
 	return (
 		<div className="flex justify-center">
 			<div className="flex justify-center">
-				<div
-					className={`${
-						""
-						// show ? "" : "hidden"
-					} mt-[10px] order-10 text-center mr-5 absolute left-[70%] md:left-[480px] lg:left-[570px] top-[345px] md:top-[235px] md: z-10`}
-				>
-					<img className="h-[50px] p-3" src={loading} alt="" />
-				</div>
 				<div className="signup-wrapper p-5 mt-20 flex flex-col gap-2">
 					<div>
 						<p className="font-poppins w-[347px] md:w-[500px] text-[28px]">
@@ -81,13 +73,22 @@ function ConfirmEmail() {
 							Code de confirmation
 						</p>
 					</div>
-					<div>
-						<input
-							type="text"
-							className="bg-[#F7F7F7] text-Poppins rounded-[7px] pt-[16px] pb-[16px] pr-[12px] w-[360px] md:w-[500px] pl-3 font-light mt-1 text-[13px] active:border-green-500 relative"
-							placeholder="XXXXXX"
-							onChange={(e) => setCode(e.target.value)}
-						/>
+					<div className="flex">
+						<div>
+							<input
+								type="text"
+								className="bg-[#F7F7F7] text-Poppins rounded-[7px] pt-[16px] pb-[16px] pr-[12px] w-[360px] md:w-[500px] pl-3 font-light mt-1 text-[13px] active:border-green-500 relative"
+								placeholder="XXXXXX"
+								onChange={(e) => setCode(e.target.value)}
+							/>
+						</div>
+						<div
+							className={`${
+								show ? "" : "hidden"
+							} mt-[10px] order-10 text-center ml-[-75px] -translate-y-1 z-10`}
+						>
+							<img className="h-[50px] p-3" src={loading} alt="" />
+						</div>
 					</div>
 					<div className="w-[346px] md:w-[500px] md:order-7 mt-4">
 						<p className="text-[#636E72] font-light text-[13px] leading-[28.2px]">
